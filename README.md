@@ -32,3 +32,15 @@ linux:~ # curl --request POST --form age=10 http://127.0.0.1:5050/hello/test
 ```bash
 linux:~ # curl --request POST --data '{"abc": 1}' http://127.0.0.1:5050/api  
 ```
+
+
+---
+
+# Parse
+
+```bash
+linux:~ # curl http://localhost:5050/user 
+linux:~ # curl http://localhost:5050/user/0
+linux:~ # curl -X POST -d '{"name":"test}' http://localhost:5050/user 
+```
+
