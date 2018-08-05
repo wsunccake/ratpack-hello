@@ -1,6 +1,7 @@
 import data.User
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import ratpack.exec.Blocking
 import ratpack.form.Form
 import service.DefaultUserService
 import service.UserService
@@ -59,9 +60,27 @@ ratpack {
                 byMethod {
                     get { UserService userService ->
                         if (pathTokens.get('id')) {
-                            render JsonOutput.toJson(userService.show(pathTokens.id.toInteger()))
+                            Blocking.get {
+                                userService.show(pathTokens.id.toInteger())
+                            }.then { user ->
+                                if (user) {
+                                    render JsonOutput.toJson(user)
+                                } else {
+                                    response.status(404)
+                                    render(JsonOutput.toJson([status: "not_found"]))
+                                }
+                            }
+
                         } else {
-                            render JsonOutput.toJson(userService.list())
+                            // block code
+                            // render JsonOutput.toJson(userService.list())
+
+                            // non block code
+                            Blocking.get {
+                                userService.list()
+                            }.then { users ->
+                                render JsonOutput.toJson(users)
+                            }
                         }
                     }
 
